@@ -88,7 +88,7 @@ resource "ibm_resource_instance" "lt_instance" {
   name              = "woolworths-331634-translator"
   service           = "language-translator"
   plan              = local.plan != "plus" ? "lite" : "standard"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -116,7 +116,7 @@ resource "ibm_resource_instance" "discovery_instance" {
   name              = "woolworths-331634-discovery"
   service           = "discovery"
   plan              = "plus"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -144,7 +144,7 @@ resource "ibm_resource_instance" "stt_instance" {
   name              = "woolworths-331634-stt"
   service           = "speech-to-text"
   plan              = local.plan != "plus" ? "lite" : "plus"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -172,7 +172,7 @@ resource "ibm_resource_instance" "tts_instance" {
   name              = "woolworths-331634-tts"
   service           = "text-to-speech"
   plan              = local.plan != "plus" ? "lite" : "standard"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -273,7 +273,7 @@ resource "ibm_resource_instance" "nlu_instance" {
   name              = "woolworths-331634-nlu"
   service           = "natural-language-understanding"
   plan              = local.plan != "plus" ? "free" : "standard"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -301,7 +301,7 @@ resource "ibm_resource_instance" "wa_instance" {
   name              = "woolworths-331634-assistant"
   service           = "conversation"
   plan              = local.plan != "plus" ? "lite" : "plus"
-  location          = "frankfurt"
+  location          = "eu-de"
   resource_group_id = ibm_resource_group.group.id
   
   provisioner "local-exec" {
