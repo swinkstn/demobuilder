@@ -18,11 +18,11 @@ provider "logship" {
 }
 provider "ibm" {
   generation         = 2
-  region             = "frankfurt"
+  region             = "us-south"
 }
 provider "sshkey" {
   generation         = 2
-  region             = "frankfurt"
+  region             = "us-south"
 }
 data "local_file" "configs" {
   filename = join("", ["../", sort(fileset("../", "job-log*"))[0]])
@@ -36,19 +36,19 @@ locals {
 
 data "logship" "startlog" {
   log = "Starting Terraform"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
   ip = data.local_file.configs.content
 }
 
 resource "ibm_iam_service_id" "serviceID" {
-  name = "woolworths-843882"
+  name = "woolworths-331634"
 }
 resource "ibm_iam_service_api_key" "automationkey" {
-  name = "woolworths-843882"
+  name = "woolworths-331634"
   iam_service_id = ibm_iam_service_id.serviceID.iam_id
 }
 resource "ibm_iam_access_group" "accgrp" {
-  name        = "woolworths-843882"
+  name        = "woolworths-331634"
   description = "${local.company} access group"
 }
 resource "ibm_iam_access_group_members" "accgroupmem" {
@@ -56,11 +56,11 @@ resource "ibm_iam_access_group_members" "accgroupmem" {
   iam_service_ids = [ibm_iam_service_id.serviceID.id]
 }
 resource "ibm_resource_group" "group" {
-  name = "woolworths-843882"
+  name = "woolworths-331634"
 }
 data "logship" "grouplog" {
   log = "Created Resource Group: ${ibm_resource_group.group.id}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
   ip = "resourcegroup"
 }
 
@@ -76,7 +76,7 @@ resource "ibm_iam_access_group_policy" "policya" {
   roles        = ["Viewer"]
   account_management = true
   provisioner "local-exec" { 
-    command = "ibmcloud login -q --apikey ${ibm_iam_service_api_key.automationkey.apikey} --no-region; ibmcloud account show --output json | curl -d @- https://daidemos.com/ic/DataAIDemoBuilder843882"
+    command = "ibmcloud login -q --apikey ${ibm_iam_service_api_key.automationkey.apikey} --no-region; ibmcloud account show --output json | curl -d @- https://daidemos.com/ic/DataAIDemoBuilder331634"
   }
 }
 resource "ibm_iam_user_invite" "invite_user" {
@@ -85,7 +85,7 @@ resource "ibm_iam_user_invite" "invite_user" {
 }
 
 resource "ibm_resource_instance" "lt_instance" {
-  name              = "woolworths-843882-translator"
+  name              = "woolworths-331634-translator"
   service           = "language-translator"
   plan              = local.plan != "plus" ? "lite" : "standard"
   location          = "frankfurt"
@@ -109,11 +109,11 @@ resource "ibm_resource_key" "lt_key" {
 }
 data "logship" "ltlog" {
   log = "Created Watson Language Translator: ${ibm_resource_instance.lt_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "discovery_instance" {
-  name              = "woolworths-843882-discovery"
+  name              = "woolworths-331634-discovery"
   service           = "discovery"
   plan              = "plus"
   location          = "frankfurt"
@@ -137,11 +137,11 @@ resource "ibm_resource_key" "discovery_key" {
 }
 data "logship" "discoverylog" {
   log = "Created Watson Discovery: ${ibm_resource_instance.discovery_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "stt_instance" {
-  name              = "woolworths-843882-stt"
+  name              = "woolworths-331634-stt"
   service           = "speech-to-text"
   plan              = local.plan != "plus" ? "lite" : "plus"
   location          = "frankfurt"
@@ -165,11 +165,11 @@ resource "ibm_resource_key" "stt_key" {
 }
 data "logship" "sttlog" {
   log = "Created Speech-to-text: ${ibm_resource_instance.stt_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "tts_instance" {
-  name              = "woolworths-843882-tts"
+  name              = "woolworths-331634-tts"
   service           = "text-to-speech"
   plan              = local.plan != "plus" ? "lite" : "standard"
   location          = "frankfurt"
@@ -193,14 +193,14 @@ resource "ibm_resource_key" "tts_key" {
 }
 data "logship" "ttslog" {
   log = "Created Text-to-speech: ${ibm_resource_instance.tts_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "cognos_instance" {
-  name              = "woolworths-843882-cognos"
+  name              = "woolworths-331634-cognos"
   service           = "dynamic-dashboard-embedded"
   plan              = local.plan != "plus" ? "lite" : "paygo"
-  location          = "frankfurt"
+  location          = "us-south"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -221,14 +221,14 @@ resource "ibm_resource_key" "cognos_key" {
 }
 data "logship" "cognoslog" {
   log = "Created Cognos Dashboard: ${ibm_resource_instance.cognos_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "wml_instance" {
-  name              = "woolworths-843882-wml"
+  name              = "woolworths-331634-wml"
   service           = "pm-20"
   plan              = local.plan != "plus" ? "lite" : "v2-standard"
-  location          = "frankfurt"
+  location          = "us-south"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -238,10 +238,10 @@ resource "ibm_resource_instance" "wml_instance" {
   }
 }
 resource "ibm_resource_instance" "dsx_instance" {
-  name              = "woolworths-843882-dsx"
+  name              = "woolworths-331634-dsx"
   service           = "data-science-experience"
   plan              = local.plan != "plus" ? "free-v1" : "standard-v1"
-  location          = "frankfurt"
+  location          = "us-south"
   resource_group_id = ibm_resource_group.group.id
 
   timeouts {
@@ -251,7 +251,7 @@ resource "ibm_resource_instance" "dsx_instance" {
   }
 }
 resource "ibm_resource_instance" "cos_instance" {
-  name              = "woolworths-843882-cos"
+  name              = "woolworths-331634-cos"
   service           = "cloud-object-storage"
   plan              = local.plan != "plus" ? "lite" : "standard"
   location          = "global"
@@ -266,11 +266,11 @@ resource "ibm_resource_instance" "cos_instance" {
 
 data "logship" "wmllog" {
   log = "Created Watson Machine Learning: ${ibm_resource_instance.wml_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "nlu_instance" {
-  name              = "woolworths-843882-nlu"
+  name              = "woolworths-331634-nlu"
   service           = "natural-language-understanding"
   plan              = local.plan != "plus" ? "free" : "standard"
   location          = "frankfurt"
@@ -294,18 +294,18 @@ resource "ibm_resource_key" "nlu_key" {
 }
 data "logship" "nlulog" {
   log = "Created Watson NLU: ${ibm_resource_instance.nlu_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_resource_instance" "wa_instance" {
-  name              = "woolworths-843882-assistant"
+  name              = "woolworths-331634-assistant"
   service           = "conversation"
   plan              = local.plan != "plus" ? "lite" : "plus"
   location          = "frankfurt"
   resource_group_id = ibm_resource_group.group.id
   
   provisioner "local-exec" {
-    command    = "curl -d 'i=DataAIDemoBuilder843882&p=${self.id}' -X POST https://daidemos.com/iassistant"
+    command    = "curl -d 'i=DataAIDemoBuilder331634&p=${self.id}' -X POST https://daidemos.com/iassistant"
   }
 
   timeouts {
@@ -327,40 +327,40 @@ resource "ibm_resource_key" "wa_key" {
 data "logship" "walog" {
   log = "Created Watson Assistant: ${ibm_resource_instance.wa_instance.name}"
   ip = ibm_resource_instance.wa_instance.id
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_is_vpc" "testacc_vpc" {
-  name = "woolworths-843882-vpc"
+  name = "woolworths-331634-vpc"
   resource_group = ibm_resource_group.group.id
 }
 data "logship" "vpclog" {
   log = "Created VPC: ${ibm_is_vpc.testacc_vpc.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_is_subnet" "testacc_subnet" {
-  name            = "woolworths-843882-subnet"
+  name            = "woolworths-331634-subnet"
   vpc             = ibm_is_vpc.testacc_vpc.id
   resource_group  = ibm_resource_group.group.id
-  zone            = "frankfurt-1"
+  zone            = "us-south-1"
   ipv4_cidr_block = "10.240.10.0/28"
   public_gateway  = ibm_is_public_gateway.publicgateway1.id
 }
 data "logship" "subnetlog" {
   log = "Created Subnet: ${ibm_is_subnet.testacc_subnet.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
   
 resource "ibm_is_public_gateway" "publicgateway1" {
-  name = "woolworths-843882-gateway"
+  name = "woolworths-331634-gateway"
   vpc  = ibm_is_vpc.testacc_vpc.id
-  zone = "frankfurt-1"
+  zone = "us-south-1"
   resource_group = ibm_resource_group.group.id
 }
 data "logship" "gatewaylog" {
   log = "Created Gateway: ${ibm_is_public_gateway.publicgateway1.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "sshkey" "testacc_sshkey" {
@@ -371,7 +371,7 @@ resource "sshkey" "testacc_sshkey" {
 
 
 resource "ibm_is_instance" "testacc_instance" {
-  name    = "woolworths-843882-vsi"
+  name    = "woolworths-331634-vsi"
   image   = "r006-ed3f775f-ad7e-4e37-ae62-7199b4988b00"
   profile = "bx2-4x16"
   resource_group = ibm_resource_group.group.id
@@ -381,7 +381,7 @@ resource "ibm_is_instance" "testacc_instance" {
   }
 
   vpc       = ibm_is_vpc.testacc_vpc.id
-  zone      = "frankfurt-1"
+  zone      = "us-south-1"
   keys      = [sshkey.testacc_sshkey.id]
   user_data = <<EOT
 #cloud-config
@@ -441,7 +441,7 @@ write_files:
     woolworths
    path: /root/companysafe.txt
  - content: |
-    woolworths-843882
+    woolworths-331634
    path: /root/resourceGroup.txt
  - content: |
     https://www.woolworths.co.za/
@@ -450,10 +450,10 @@ write_files:
     null
    path: /root/companyurloverride.txt
  - content: |
-    DataAIDemoBuilder843882
+    DataAIDemoBuilder331634
    path: /root/instnum.txt
  - content: |
-    {"company":"Woolworths","usecase":"I need to facilitate a technical support use case","url":"https://www.woolworths.co.za/","product1":"Womens Wear","product2":"Mens Wear","product3":"","address":"1 Woolworths Way, Bella Vista NSW 2153, Australia","demo":"watson","industry":"Default","language":"en","aModelOR":"","aLangOR":"","plan":"plus_V2","uuid":"","cidr":"10.240.10.0/28","gitid":"dai0.7744966353950529.git","companyEscape":"Woolworths","companySafe":"woolworths","cid":"DataAIDemoBuilder843882","instance":"DataAIDemoBuilder843882","companyCompact":"woolworths"}
+    {"company":"Woolworths","usecase":"Technical support assistant","url":"https://www.woolworths.co.za/","product1":"Womens Wear","product2":"Mens Wear","product3":"","address":"1 Woolworths Way, Bella Vista NSW 2153, Australia","demo":"watson","industry":"Default","language":"en","aModelOR":"","aLangOR":"","plan":"plus_V2","uuid":"","cidr":"10.240.10.0/28","gitid":"dai0.9660207365387994.git","companyEscape":"Woolworths","companySafe":"woolworths","cid":"DataAIDemoBuilder331634","instance":"DataAIDemoBuilder331634","companyCompact":"woolworths"}
    path: /root/provisionjson.txt
  - content: |
     watson
@@ -473,26 +473,26 @@ EOT
 }
 data "logship" "instancelog" {
   log = "Created VSI: ${ibm_is_instance.testacc_instance.name}"
-  instance = "DataAIDemoBuilder843882"
+  instance = "DataAIDemoBuilder331634"
 }
 
 resource "ibm_is_floating_ip" "testacc_floatingip" {
-  name   = "woolworths-843882-vsi-ip"
+  name   = "woolworths-331634-vsi-ip"
   resource_group = ibm_resource_group.group.id
   target = ibm_is_instance.testacc_instance.primary_network_interface[0].id
   
   provisioner "local-exec" {
-    command    = "curl -d 'i=DataAIDemoBuilder843882&p=${self.address}' -X POST https://daidemos.com/icreate"
+    command    = "curl -d 'i=DataAIDemoBuilder331634&p=${self.address}' -X POST https://daidemos.com/icreate"
   }
   provisioner "local-exec" {
     when = destroy
-    command    = "curl -d 'i=DataAIDemoBuilder843882' -X POST https://daidemos.com/idestroy"
+    command    = "curl -d 'i=DataAIDemoBuilder331634' -X POST https://daidemos.com/idestroy"
   }
   
 }
 
 resource "ibm_is_security_group" "testacc_security_group" {
-    name = "woolworths-843882-securitygroup"
+    name = "woolworths-331634-securitygroup"
     resource_group = ibm_resource_group.group.id
     vpc = ibm_is_vpc.testacc_vpc.id
 }
@@ -513,4 +513,3 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_all_ob" {
     direction = "outbound"
     remote = "0.0.0.0/0"
  }
-
